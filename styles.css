@@ -299,10 +299,24 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
   text-align:left;
   flex:1;
 }
+.statement-select{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:8px 10px 6px;
+}
+.statement-select .check{
+  width:18px;height:18px;border-radius:6px;background:#fff;border:1.8px solid currentColor;position:relative;
+}
+.statement-card:has(input:checked) .check:after{
+  content:"";
+  position:absolute;left:5px;top:2px;width:4px;height:8px;
+  border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);
+}
 .statement-footer{
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content:center;
   gap:8px;
   padding:8px 10px;
   border-top:1px solid rgba(0,0,0,.05);
@@ -310,14 +324,6 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
   font-weight:750;
   text-transform:uppercase;
   letter-spacing:.05em;
-}
-.statement-footer .check{
-  width:18px;height:18px;border-radius:6px;background:#fff;border:1.8px solid currentColor;position:relative;
-}
-.statement-card:has(input:checked) .check:after{
-  content:"";
-  position:absolute;left:5px;top:2px;width:4px;height:8px;
-  border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);
 }
 .statement-card.green .statement-footer{background:rgba(42,166,90,.16);color:var(--out)}
 .statement-card.yellow .statement-footer{background:rgba(236,205,73,.22);color:#806700}
@@ -443,7 +449,14 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
     color:#111!important;
   }
   select{appearance:none;-webkit-appearance:none}
-  textarea{resize:none;overflow:visible;min-height:0;white-space:pre-wrap}
+  textarea{
+    resize:none;
+    overflow:visible!important;
+    min-height:0;
+    white-space:pre-wrap;
+    line-height:1.45!important;
+    padding-bottom:2.2mm!important;
+  }
   .appraisal-grid{grid-template-columns:repeat(4,1fr);gap:1.5mm}
   .appraisal-card{padding:2mm;border-radius:0;border:1px solid #d9dde0;break-inside:avoid;background:#fff}
   .appraisal-card>span{font-size:7.4pt;min-height:auto}
@@ -476,8 +489,19 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
   .progress-grid{grid-template-columns:repeat(5,1fr)}
   .statement-card{min-height:34mm;border-radius:0;break-inside:avoid;transform:none!important;box-shadow:none!important;background:#fff}
   .statement-copy{padding:2mm 1.6mm;font-size:6.6pt;line-height:1.25}
-  .statement-footer{padding:1.3mm 1.5mm;font-size:6.3pt}
-  .statement-footer .check{width:11px;height:11px;border-radius:2px}
+  .statement-select{padding:1.5mm 0 1mm}
+  .statement-select .check{
+    width:11px;
+    height:11px;
+    border-radius:2px;
+    border-width:1px;
+  }
+  .statement-footer{
+    justify-content:center;
+    padding:1.2mm 1.5mm;
+    font-size:6.3pt;
+    text-align:center;
+  }
   .statement-card:has(input:checked){outline:1.5px solid #111;outline-offset:-1.5px}
   .summary-grid{grid-template-columns:repeat(4,1fr);gap:1.5mm}
   .summary-box{border-radius:0;padding:2mm;gap:1mm;break-inside:avoid;background:#fff}
