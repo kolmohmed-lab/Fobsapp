@@ -306,12 +306,29 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
   padding:8px 10px 6px;
 }
 .statement-select .check{
-  width:18px;height:18px;border-radius:6px;background:#fff;border:1.8px solid currentColor;position:relative;
+  width:18px;
+  height:18px;
+  border-radius:5px;
+  background:#fff;
+  border:1.5px solid #6f767a;
+  position:relative;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
+}
+.statement-card:has(input:checked) .check{
+  background:var(--teal);
+  border-color:var(--teal);
 }
 .statement-card:has(input:checked) .check:after{
-  content:"";
-  position:absolute;left:5px;top:2px;width:4px;height:8px;
-  border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);
+  content:"✓";
+  position:static;
+  font-size:12px;
+  line-height:1;
+  font-weight:800;
+  color:#fff;
+  transform:none;
 }
 .statement-footer{
   display:flex;
@@ -491,10 +508,23 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
   .statement-copy{padding:2mm 1.6mm;font-size:6.6pt;line-height:1.25}
   .statement-select{padding:1.5mm 0 1mm}
   .statement-select .check{
-    width:11px;
-    height:11px;
+    width:12px;
+    height:12px;
     border-radius:2px;
-    border-width:1px;
+    border:1px solid #555;
+    background:#fff;
+    box-shadow:none;
+  }
+  .statement-card:has(input:checked) .check{
+    background:#111;
+    border-color:#111;
+  }
+  .statement-card:has(input:checked) .check:after{
+    content:"✓";
+    font-size:8px;
+    line-height:1;
+    color:#fff;
+    font-weight:800;
   }
   .statement-footer{
     justify-content:center;
