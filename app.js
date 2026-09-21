@@ -20,7 +20,7 @@ const learningCriteria = [
   ["peerAssessment","Do students assess their own, and each other’s work?"],
   ["collaboration","Do students interact, collaborate and communicate their learning effectively?"],
   ["connections","Do students make connections between what they are learning and other learning / the real world?"],
-  ["innovationResearch","Are students engaged in innovation & enterprise, enquiry & research?"],
+  ["innovationResearch","Are students engaged in innovation, independent learning, enquiry & research?"],
   ["technology","Are resources, including technology, used purposefully to enhance learning?"],
   ["studentCriticalThinking","Are students developing critical thinking & problem solving in the lesson?"]
 ];
