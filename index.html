@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f6f78" />
+  <title>Formal Lesson Observation</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header no-print">
+      <div class="brand">
+        <div class="brand-mark">FO</div>
+        <div>
+          <div class="brand-title">Formal Observation</div>
+          <div class="brand-subtitle">DAIS & DHS</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span id="saveState" class="save-state">Draft saved locally</span>
+        <button type="button" class="btn btn-ghost" id="clearBtn">Clear</button>
+        <button type="button" class="btn btn-secondary" id="saveBtn">Save draft</button>
+        <button type="button" class="btn btn-primary" id="printBtn">Print / Save PDF</button>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="hero no-print">
+        <div>
+          <p class="kicker">Lesson Observation</p>
+          <h1>Formal Lesson Observation</h1>
+          <p class="hero-copy">A clean, structured observation record designed for fast completion, clear feedback, and professional printing.</p>
+        </div>
+        <div class="hero-badge">
+          <span class="hero-badge-label">Overall</span>
+          <strong id="heroOverall">Not rated</strong>
+        </div>
+      </section>
+
+      <form id="observationForm">
+        <section class="panel identity-panel print-card">
+          <div class="panel-heading">
+            <div>
+              <span class="step">01</span>
+              <h2>Observation details</h2>
+            </div>
+            <p>Basic lesson information</p>
+          </div>
+          <div class="field-grid">
+            <label class="field">
+              <span>Teacher</span>
+              <input name="teacher" type="text" placeholder="Teacher name" />
+            </label>
+            <label class="field">
+              <span>Department</span>
+              <input name="department" type="text" placeholder="Department" />
+            </label>
+            <label class="field">
+              <span>Course</span>
+              <input name="course" type="text" placeholder="Course / class" />
+            </label>
+            <label class="field">
+              <span>Observer</span>
+              <input name="observer" type="text" placeholder="Observer name" />
+            </label>
+            <label class="field">
+              <span>Observation date</span>
+              <input name="observationDate" type="date" />
+            </label>
+            <label class="field">
+              <span>School</span>
+              <select name="school">
+                <option value="">Select school</option>
+                <option value="DAIS">DAIS</option>
+                <option value="DHS">DHS</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel print-card">
+          <div class="panel-heading">
+            <div>
+              <span class="step">02</span>
+              <h2>Teacher's lesson appraisal</h2>
+            </div>
+            <p>Initial appraisal before detailed evidence</p>
+          </div>
+          <div id="appraisalCards" class="appraisal-grid"></div>
+          <div class="overall-card">
+            <div>
+              <span class="mini-label">Calculated overall</span>
+              <strong id="appraisalCalculated">Not rated</strong>
+            </div>
+            <label class="field compact">
+              <span>Manual override</span>
+              <select name="appraisalOverallOverride" id="appraisalOverallOverride">
+                <option value="">Automatic</option>
+                <option value="OUTSTANDING">Outstanding</option>
+                <option value="ACCEPTABLE">Acceptable</option>
+                <option value="INCOMPLETE">Incomplete</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel print-card">
+          <div class="panel-heading">
+            <div>
+              <span class="step">03</span>
+              <h2>Faculty teaching skills</h2>
+            </div>
+            <p>Rate each area and add evidence where useful</p>
+          </div>
+          <div id="facultyCriteria" class="criteria-stack"></div>
+          <label class="field notes-field">
+            <span>Additional notes</span>
+            <textarea name="facultyNotes" rows="4" placeholder="Additional evidence or context..."></textarea>
+          </label>
+        </section>
+
+        <section class="panel print-card">
+          <div class="panel-heading">
+            <div>
+              <span class="step">04</span>
+              <h2>Student learning skills</h2>
+            </div>
+            <p>Evidence of how students engage with learning</p>
+          </div>
+          <div id="learningCriteria" class="criteria-stack"></div>
+          <label class="field notes-field">
+            <span>Additional notes</span>
+            <textarea name="learningNotes" rows="4" placeholder="Additional evidence or context..."></textarea>
+          </label>
+        </section>
+
+        <section class="panel print-card">
+          <div class="panel-heading">
+            <div>
+              <span class="step">05</span>
+              <h2>Student attainment</h2>
+            </div>
+            <p>Select the statement that best matches the evidence observed</p>
+          </div>
+          <div id="attainmentOptions" class="statement-grid attainment-grid"></div>
+        </section>
+
+        <section class="panel print-card">
+          <div class="panel-heading">
+            <div>
+              <span class="step">06</span>
+              <h2>Student progress</h2>
+            </div>
+            <p>Select the statement that best matches the progress observed</p>
+          </div>
+          <div id="progressOptions" class="statement-grid progress-grid"></div>
+        </section>
+
+        <section class="panel summary-panel print-card">
+          <div class="panel-heading">
+            <div>
+              <span class="step">07</span>
+              <h2>Evaluation summary</h2>
+            </div>
+            <p>Calculated from the detailed evidence below</p>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-box">
+              <span>Faculty teaching skills</span>
+              <strong id="facultySummary">Not rated</strong>
+              <select name="evaluationFacultyOverride" aria-label="Faculty teaching skills override">
+                <option value="">Automatic</option>
+                <option value="OUTSTANDING">Outstanding</option>
+                <option value="ACCEPTABLE">Acceptable</option>
+                <option value="INCOMPLETE">Incomplete</option>
+              </select>
+            </div>
+            <div class="summary-box">
+              <span>Student learning skills</span>
+              <strong id="learningSummary">Not rated</strong>
+              <select name="evaluationLearningOverride" aria-label="Student learning skills override">
+                <option value="">Automatic</option>
+                <option value="OUTSTANDING">Outstanding</option>
+                <option value="ACCEPTABLE">Acceptable</option>
+                <option value="INCOMPLETE">Incomplete</option>
+              </select>
+            </div>
+            <div class="summary-box">
+              <span>Student attainment</span>
+              <strong id="attainmentSummary">Not rated</strong>
+              <select name="evaluationAttainmentOverride" aria-label="Student attainment override">
+                <option value="">Automatic</option>
+                <option value="OUTSTANDING">Outstanding</option>
+                <option value="ACCEPTABLE">Acceptable</option>
+                <option value="INCOMPLETE">Incomplete</option>
+              </select>
+            </div>
+            <div class="summary-box">
+              <span>Student progress</span>
+              <strong id="progressSummary">Not rated</strong>
+              <select name="evaluationProgressOverride" aria-label="Student progress override">
+                <option value="">Automatic</option>
+                <option value="OUTSTANDING">Outstanding</option>
+                <option value="ACCEPTABLE">Acceptable</option>
+                <option value="INCOMPLETE">Incomplete</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="final-overall">
+            <div>
+              <span>Final overall</span>
+              <strong id="finalOverall">Not rated</strong>
+            </div>
+            <label class="field compact">
+              <span>Manual override</span>
+              <select name="evaluationOverallOverride">
+                <option value="">Automatic</option>
+                <option value="OUTSTANDING">Outstanding</option>
+                <option value="ACCEPTABLE">Acceptable</option>
+                <option value="INCOMPLETE">Incomplete</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel print-card">
+          <div class="panel-heading">
+            <div>
+              <span class="step">08</span>
+              <h2>Feedback & next steps</h2>
+            </div>
+            <p>Clear, practical feedback for professional growth</p>
+          </div>
+          <div class="feedback-grid">
+            <label class="feedback-card strengths">
+              <span class="feedback-title">Main strengths of the lesson</span>
+              <textarea name="strengths" rows="5" placeholder="What was particularly effective?"></textarea>
+            </label>
+            <label class="feedback-card improvements">
+              <span class="feedback-title">Items for improvement</span>
+              <textarea name="improvement" rows="5" placeholder="What could be strengthened?"></textarea>
+            </label>
+            <label class="feedback-card next-steps">
+              <span class="feedback-title">Next steps moving forward</span>
+              <textarea name="nextSteps" rows="5" placeholder="What should happen next?"></textarea>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel rubric-panel print-card">
+          <details>
+            <summary>Reference rubric — Faculty teaching skills</summary>
+            <div id="facultyRubric" class="rubric-wrap"></div>
+          </details>
+        </section>
+
+        <section class="panel rubric-panel print-card">
+          <details>
+            <summary>Reference rubric — Student learning skills</summary>
+            <div id="learningRubric" class="rubric-wrap"></div>
+          </details>
+        </section>
+
+        <div class="mobile-actions no-print">
+          <button type="button" class="btn btn-secondary" id="mobileSaveBtn">Save draft</button>
+          <button type="button" class="btn btn-primary" id="mobilePrintBtn">Print / Save PDF</button>
+        </div>
+      </form>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
