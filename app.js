@@ -120,7 +120,8 @@ function renderStatements(targetId,name,items){
     <label class="statement-card ${band}">
       <input type="radio" name="${name}" value="${value}">
       <div class="statement-copy">${text}</div>
-      <div class="statement-footer"><span>${band}</span><span class="check"></span></div>
+      <div class="statement-select"><span class="check"></span></div>
+      <div class="statement-footer"><span>${band}</span></div>
     </label>`).join("");
 }
 
@@ -229,7 +230,10 @@ function prepPrint(){
   document.querySelectorAll("textarea").forEach(el=>{
     el.dataset.oldHeight=el.style.height||"";
     el.style.height="auto";
-    el.style.height=el.scrollHeight+"px";
+    // Add breathing room because browser print engines can round line-height
+    // differently from the on-screen layout, which can clip the final line.
+    const safeHeight = el.scrollHeight + 24;
+    el.style.height=safeHeight+"px";
   });
   document.querySelectorAll(".rubric-panel details").forEach(d=>d.open=true);
 }
