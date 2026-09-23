@@ -1,5 +1,5 @@
 const form = document.getElementById("observationForm");
-const STORAGE_KEY = "fobs_draft_v2";
+const STORAGE_KEY = "fobs_session_draft_v1";
 
 // Observer access gate — approved emails stay server-side in Vercel.
 const ACCESS_SESSION_KEY = "fobs_observer_email";
@@ -45,6 +45,7 @@ function initObserverAccess(){
     try{
       const data=await checkObserverAccess(email);
       message.textContent="";
+      startFreshObservation(data.email);
       unlockFobs(data.email);
     }catch(err){
       message.textContent=err.message;
@@ -379,21 +380,88 @@ function restore(data){
 }
 function setSaveState(text){document.getElementById("saveState").textContent=text}
 function saveDraft(){
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(serialize()));
-  setSaveState("Draft saved locally");
+  sessionStorage.setItem(STORAGE_KEY,JSON.stringify(serialize()));
+  setSaveState("Draft saved for this session");
 }
 function loadDraft(){
   try{
-    const raw=localStorage.getItem(STORAGE_KEY);
-    if(raw){restore(JSON.parse(raw));setSaveState("Draft restored");}
+    const raw=sessionStorage.getItem(STORAGE_KEY);
+    if(raw){restore(JSON.parse(raw));setSaveState("Session draft restored");}
   }catch(e){console.warn("Could not restore draft",e)}
 }
-function clearForm(){
-  if(!confirm("Clear this observation and remove the saved local draft?")) return;
+function startFreshObservation(observerEmail=""){
   form.reset();
-  localStorage.removeItem(STORAGE_KEY);
-  setSaveState("Draft cleared");
+  sessionStorage.removeItem(STORAGE_KEY);
+  renderObservedTeachers();
+  renderCourses();
+  toggleOtherCourse();
+  if(form.elements.observer) form.elements.observer.value=observerEmail;
+  defaultObservationDate();
   recalc();
+  setSaveState("New observation");
+}
+function clearForm(){
+  if(!confirm("Clear this observation and remove the current session draft?")) return;
+  const observerEmail=sessionStorage.getItem(ACCESS_SESSION_KEY) || "";
+  startFreshObservation(observerEmail);
+}
+function signOut(){
+  sessionStorage.removeItem(ACCESS_SESSION_KEY);
+  sessionStorage.removeItem(STORAGE_KEY);
+  form.reset();
+  document.getElementById("mainApp")?.classList.add("access-locked");
+  document.getElementById("accessGate")?.classList.remove("is-hidden");
+  const active=document.getElementById("activeObserver");
+  if(active) active.textContent="";
+  const input=document.getElementById("observerAccessEmail");
+  if(input){input.value=""; input.focus();}
+  setSaveState("New observation");
+}
+function summaryValue(id){
+  return document.getElementById(id)?.textContent?.trim() || "Not rated";
+}
+function buildSubmissionPayload(){
+  const fields=serialize();
+  return {
+    ...fields,
+    course: fields.course==="Other" ? (fields.otherCourse || "Other") : fields.course,
+    facultySummary: summaryValue("facultySummary"),
+    learningSummary: summaryValue("learningSummary"),
+    attainmentSummary: summaryValue("attainmentSummary"),
+    progressSummary: summaryValue("progressSummary"),
+    finalOverall: summaryValue("finalOverall"),
+    weights: {
+      faculty: evaluationWeights.faculty,
+      learning: evaluationWeights.learning,
+      attainment: evaluationWeights.attainment,
+      progress: evaluationWeights.progress
+    },
+    submittedAt: new Date().toISOString()
+  };
+}
+async function submitObservation(){
+  const status=document.getElementById("submitStatus");
+  const buttons=[document.getElementById("submitBtn"),document.getElementById("mobileSubmitBtn")].filter(Boolean);
+  if(!form.reportValidity()) return;
+  buttons.forEach(b=>b.disabled=true);
+  if(status) status.textContent="Submitting observation…";
+  try{
+    recalc();
+    const response=await fetch("/api/submit-observation",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(buildSubmissionPayload())
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(data.error || "Could not submit observation");
+    if(status) status.textContent="Observation submitted successfully.";
+    sessionStorage.removeItem(STORAGE_KEY);
+    setSaveState("Submitted");
+  }catch(err){
+    if(status) status.textContent=err.message;
+  }finally{
+    buttons.forEach(b=>b.disabled=false);
+  }
 }
 function prepPrint(){
   document.querySelectorAll("textarea").forEach(el=>{
@@ -421,6 +489,9 @@ form.addEventListener("change",()=>{recalc();saveDraft()});
 
 document.getElementById("saveBtn").addEventListener("click",saveDraft);
 document.getElementById("mobileSaveBtn").addEventListener("click",saveDraft);
+document.getElementById("submitBtn").addEventListener("click",submitObservation);
+document.getElementById("mobileSubmitBtn").addEventListener("click",submitObservation);
+document.getElementById("signOutBtn").addEventListener("click",signOut);
 document.getElementById("clearBtn").addEventListener("click",clearForm);
 document.getElementById("printBtn").addEventListener("click",()=>{saveDraft();window.print()});
 document.getElementById("mobilePrintBtn").addEventListener("click",()=>{saveDraft();window.print()});
