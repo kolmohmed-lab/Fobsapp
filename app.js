@@ -201,13 +201,6 @@ const learningCriteria = [
   ["studentCriticalThinking","Are students developing critical thinking & problem solving in the lesson?"]
 ];
 
-const appraisalItems = [
-  ["appraisalFaculty","Faculty Teaching Skills"],
-  ["appraisalLearning","Student Learning Skills"],
-  ["appraisalAttainment","Student Attainment"],
-  ["appraisalProgress","Student Progress"]
-];
-
 const attainmentItems = [
   ["att1","Most, if not all students demonstrated levels of knowledge, skills & understanding that are above curriculum standards.","green"],
   ["att2","A large majority of students demonstrated levels of knowledge, skills & understanding that are above curriculum standards.","green"],
@@ -266,18 +259,6 @@ function selected(name){
   return form.querySelector(`[name="${name}"]:checked`)?.value || "";
 }
 
-function renderAppraisal(){
-  document.getElementById("appraisalCards").innerHTML = appraisalItems.map(([name,label]) => `
-    <div class="appraisal-card">
-      <span>${label}</span>
-      <div class="segmented">
-        <label class="outstanding"><input type="radio" name="${name}" value="OUTSTANDING"><span>Outstanding</span></label>
-        <label class="acceptable"><input type="radio" name="${name}" value="ACCEPTABLE"><span>Acceptable</span></label>
-        <label class="incomplete"><input type="radio" name="${name}" value="INCOMPLETE"><span>Incomplete</span></label>
-      </div>
-    </div>`).join("");
-}
-
 function renderCriteria(targetId,prefix,items){
   document.getElementById(targetId).innerHTML = items.map(([key,q]) => `
     <div class="criterion-row">
@@ -309,7 +290,6 @@ function renderRubric(targetId,rows){
     </table>`;
 }
 
-renderAppraisal();
 renderCriteria("facultyCriteria","faculty",facultyCriteria);
 renderCriteria("learningCriteria","learning",learningCriteria);
 renderStatements("attainmentOptions","studentAttainment",attainmentItems);
@@ -364,11 +344,6 @@ function recalc(){
   const overallFinal=effective(overallAuto,"evaluationOverallOverride");
   paint(document.getElementById("finalOverall"),overallFinal);
   paint(document.getElementById("heroOverall"),overallFinal);
-
-  const appraisalScores=appraisalItems.map(([name])=>score(selected(name))).filter(v=>v!==null);
-  const appraisalAuto=appraisalScores.length ? classify(appraisalScores.reduce((a,b)=>a+b,0)/appraisalScores.length) : "";
-  const appraisalFinal=form.elements.appraisalOverallOverride.value || appraisalAuto;
-  paint(document.getElementById("appraisalCalculated"),appraisalFinal);
 }
 
 function serialize(){
