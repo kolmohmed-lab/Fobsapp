@@ -40,8 +40,10 @@
       </div>
       <div class="header-actions">
         <span id="activeObserver" class="active-observer"></span><span id="saveState" class="save-state">Draft saved locally</span>
+        <button type="button" class="btn btn-ghost" id="signOutBtn">Sign out</button>
         <button type="button" class="btn btn-ghost" id="clearBtn">Clear</button>
         <button type="button" class="btn btn-secondary" id="saveBtn">Save draft</button>
+        <button type="button" class="btn btn-primary" id="submitBtn">Submit observation</button>
         <button type="button" class="btn btn-primary" id="printBtn">Print / Save PDF</button>
       </div>
     </header>
@@ -274,11 +276,13 @@
 
         <div class="mobile-actions no-print">
           <button type="button" class="btn btn-secondary" id="mobileSaveBtn">Save draft</button>
+          <button type="button" class="btn btn-primary" id="mobileSubmitBtn">Submit observation</button>
           <button type="button" class="btn btn-primary" id="mobilePrintBtn">Print / Save PDF</button>
         </div>
+        <p id="submitStatus" class="save-state no-print" aria-live="polite"></p>
       </form>
     </main>
   </div>
-  <script src="app.js?v=20260923-weight35"></script>
+  <script src="app.js?v=20260923-submit1"></script>
 </body>
 </html>
