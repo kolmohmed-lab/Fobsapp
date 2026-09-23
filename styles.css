@@ -549,3 +549,61 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
   .rubric-table{font-size:6.7pt}
   .rubric-table th,.rubric-table td{padding:1.6mm}
 }
+
+/* Observer access gate */
+.access-locked{display:none!important}
+.access-gate{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:
+    radial-gradient(circle at 12% 12%,rgba(128,216,224,.24),transparent 26%),
+    radial-gradient(circle at 88% 4%,rgba(170,201,255,.22),transparent 24%),
+    linear-gradient(180deg,#f8fbfd 0%,#eef2f4 100%);
+}
+.access-gate.is-hidden{display:none}
+.access-card{
+  width:min(480px,100%);
+  padding:30px;
+  border-radius:28px;
+  background:rgba(255,255,255,.68);
+  border:1px solid rgba(255,255,255,.84);
+  box-shadow:0 24px 70px rgba(0,0,0,.10);
+  backdrop-filter:blur(26px) saturate(155%);
+  -webkit-backdrop-filter:blur(26px) saturate(155%);
+}
+.access-brand{display:flex;align-items:center;gap:11px;margin-bottom:28px}
+.access-kicker{
+  margin:0 0 8px;
+  font-size:11px;
+  font-weight:750;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--teal);
+}
+.access-card h1{
+  margin:0 0 10px;
+  font-size:34px;
+  letter-spacing:-.04em;
+  line-height:1.05;
+}
+.access-copy{margin:0 0 22px;color:var(--muted);line-height:1.5;font-size:14px}
+.access-button{width:100%;margin-top:12px;padding:12px 16px}
+.access-message{min-height:20px;margin:12px 2px 0;font-size:12px;color:var(--muted)}
+.access-message.error{color:var(--inc)}
+.active-observer{
+  max-width:240px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+  color:var(--muted);
+}
+@media(max-width:700px){
+  .active-observer{display:none}
+  .access-card{padding:22px;border-radius:22px}
+  .access-card h1{font-size:29px}
+}
