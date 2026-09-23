@@ -22,7 +22,8 @@ function unlockFobs(email){
   const active=document.getElementById("activeObserver");
   if(active) active.textContent=email;
   const observer=form?.elements?.observer;
-  if(observer && !observer.value) observer.value=email;
+  if(observer) observer.value=email;
+  defaultObservationDate();
 }
 
 function initObserverAccess(){
@@ -113,6 +114,66 @@ function renderObservedTeachers(){
   select.innerHTML='<option value="">Select teacher</option>' +
     observedTeachers.map(name=>'<option value="'+name.replace(/"/g,"&quot;")+'">'+name+'</option>').join("");
   if(current && observedTeachers.includes(current)) select.value=current;
+}
+
+
+const courseOptions = [
+  "2D Art & Design","3D Art and Design","A Level Business","A Level Economics","A Level Mathematics","A Level Physics",
+  "A-Level Language & Literature","Advanced Placement Business and Finance","Advanced Team Sports","American Literature",
+  "Ancient World Literature and Composition","Ancient World Studies","AP Biology","AP Calculus AB","AP Calculus BC",
+  "AP Chemistry","AP Chinese Language and Culture","AP Computer Science A","AP English Language and Composition",
+  "AP English Literature","AP Human Geography","AP Macro-Economics","AP Micro-Economics","AP Physics 1",
+  "AP Physics C - Electricity/M","AP Pre-Calculus","AP Psychology","AP Statistics","AP Studio Art: 2D + AP Studio Art: 3D",
+  "AP US History","AP World History","Applied Studies: Coding and Digital Mgmt","Applied Studies: Coding and Game Design",
+  "Applied Studies: Drama","Applied Studies: Drama for Musical Theatre","Applied Studies: Engr and Product Dsgn",
+  "Applied Studies: Government","Applied Studies: MS MUN","Applied Studies: MUN","Applied Studies: Product Design",
+  "Applied Studies: Yearbook","APST Digital Art","APST Robotics","APST: English for University Access","Asian Literature",
+  "Asian Studies","Chinese for Literacy Development I","Chinese for Literacy Development II","Chinese for Literacy Development III",
+  "Chinese for Literacy Development IV","Digital Photography","EAL collaboration","English 7","English 8","English 9","English 10",
+  "Environmental Science","Foundation Art","Foundation Art + Studio Support and Leadership","Health Education",
+  "Health Education: Grade 7","Health Education: Grade 8","HM Life Science","HM Mandarin 7","HM Mandarin 8","HM Physical Science",
+  "HM Pre-Algebra","HM Science 7","HM Science 8","HM Social Studies 7","HM Social Studies 8",
+  "HS Advanced Band + MS Advanced Band","HS Advanced Orchestra + MS Advanced Orchestra",
+  "HS Beginning Orchestra + MS Beginning Orchestra","HS Cambridge English Developing","HS Chinese Advanced",
+  "HS Chinese Advanced High","HS Chinese Foundation","HS Chinese Foundation High","HS Chinese Intermediate",
+  "HS Intermediate Band + MS Intermediate Band","HS Intermediate Orchestra + MS Intermediate Orchestra",
+  "Integrated Math I","Integrated Math III","Integrated Mathematics II","Journalism","Language Arts","Life Science",
+  "Lifelong Fitness","MAT 397 Calculus III","Math","Modern World Literature and Composition","Modern World Studies",
+  "MS Art I","MS Art II + Studio Support and Leadership","MS Art III + Studio Support and Leadership",
+  "MS Cambridge English Developing","MS Cambridge English Expanding","MS Cambridge English Reaching","MS Chinese Advanced",
+  "MS Chinese Advanced High","MS Chinese Foundation","MS Chinese Foundation High",
+  "MS Chinese Intermediate + MS Chinese Intermediate High","MS Physical Education","Physical Science","Physics","Pre-Algebra",
+  "Pre-AP English II","Pre-AP Studio Art","Precalculus and an Introduction to Statistics",
+  "Precalculus and Intro to Statistics","Psychology","Science","Social Science","Social Studies 9","Social Studies 10",
+  "SOC 101 Introduction to Sociology","Speech and Debate","STEAM","Team Sports","Transition to College Math and Stat",
+  "US History","WRT 105: Practices of Academic Writing","Other"
+];
+
+function renderCourses(){
+  const select=document.getElementById("courseSelect");
+  if(!select) return;
+  select.innerHTML='<option value="">Select course</option>' +
+    courseOptions.map(name=>'<option value="'+name.replace(/"/g,"&quot;")+'">'+name+'</option>').join("");
+}
+
+function toggleOtherCourse(){
+  const select=document.getElementById("courseSelect");
+  const field=document.getElementById("otherCourseField");
+  const input=document.getElementById("otherCourseInput");
+  if(!select || !field || !input) return;
+  const isOther=select.value==="Other";
+  field.hidden=!isOther;
+  input.required=isOther;
+  if(!isOther) input.value="";
+}
+
+function defaultObservationDate(){
+  const date=document.getElementById("observationDate");
+  if(date && !date.value){
+    const now=new Date();
+    const local=new Date(now.getTime()-now.getTimezoneOffset()*60000);
+    date.value=local.toISOString().slice(0,10);
+  }
 }
 
 
@@ -374,6 +435,10 @@ window.addEventListener("beforeprint",prepPrint);
 window.addEventListener("afterprint",resetAfterPrint);
 
 renderObservedTeachers();
+renderCourses();
 loadDraft();
+defaultObservationDate();
+toggleOtherCourse();
+document.getElementById("courseSelect")?.addEventListener("change",toggleOtherCourse);
 recalc();
 initObserverAccess();
