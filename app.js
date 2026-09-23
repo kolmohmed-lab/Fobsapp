@@ -240,6 +240,13 @@ const learningRubric = [
   ["Critical thinking & problem solving skills","Intrinsic features.","Developing features.","Underdeveloped features."]
 ];
 
+const evaluationWeights = {
+  faculty: 0.2166666667,
+  learning: 0.2166666667,
+  attainment: 0.2166666667,
+  progress: 0.35
+};
+
 function ratingLabel(v){
   return v === "OUTSTANDING" ? "Outstanding" : v === "ACCEPTABLE" ? "Acceptable" : v === "INCOMPLETE" ? "Incomplete" : "Not rated";
 }
@@ -339,8 +346,19 @@ function recalc(){
   paint(document.getElementById("attainmentSummary"),attainmentFinal);
   paint(document.getElementById("progressSummary"),progressFinal);
 
-  const summaryScores=[facultyFinal,learningFinal,attainmentFinal,progressFinal].map(score).filter(v=>v!==null);
-  const overallAuto=summaryScores.length ? classify(summaryScores.reduce((a,b)=>a+b,0)/summaryScores.length) : "";
+  const weightedParts = [
+    [facultyFinal, evaluationWeights.faculty],
+    [learningFinal, evaluationWeights.learning],
+    [attainmentFinal, evaluationWeights.attainment],
+    [progressFinal, evaluationWeights.progress]
+  ].map(([rating,weight])=>[score(rating),weight]).filter(([value])=>value!==null);
+
+  const overallAuto = weightedParts.length
+    ? classify(
+        weightedParts.reduce((sum,[value,weight])=>sum + value * weight,0) /
+        weightedParts.reduce((sum,[,weight])=>sum + weight,0)
+      )
+    : "";
   const overallFinal=effective(overallAuto,"evaluationOverallOverride");
   paint(document.getElementById("finalOverall"),overallFinal);
   paint(document.getElementById("heroOverall"),overallFinal);
