@@ -40,3 +40,22 @@ The completed observation can also be rendered/printed to PDF for a formal recor
 ## Deploy on Vercel
 
 This is a static site. Import this GitHub repository into Vercel and deploy using the default settings. No build command or framework preset is required for the current prototype.
+
+
+## OTP authentication prototype
+
+A standalone test page is available at:
+
+`/otp-test.html`
+
+It uses two Vercel serverless endpoints:
+
+- `/api/request-code`
+- `/api/verify-code`
+
+Required Vercel environment variables:
+
+- `OTP_SECRET` — a long random secret used to sign verification challenges
+- `POWER_AUTOMATE_URL` — the HTTP POST URL from the Power Automate flow
+
+The prototype currently only accepts `@daischina.net` email addresses. No OTP database is required for this test: the browser receives a signed challenge containing an expiry and a hash of the code, while the code itself is emailed through Power Automate.
