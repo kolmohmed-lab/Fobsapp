@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0f747d" />
+  <title>Fobs OTP Test</title>
+  <style>
+    :root{
+      --ink:#1d1d1f;--muted:#6e6e73;--teal:#0f747d;--glass:rgba(255,255,255,.64);
+      --line:rgba(0,0,0,.08);--ok:#258b52;--danger:#c83e3e;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;color:var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%,rgba(124,214,223,.25),transparent 30%),
+        radial-gradient(circle at 85% 0%,rgba(170,201,255,.22),transparent 28%),
+        linear-gradient(180deg,#f9fbfc,#eef2f4);
+    }
+    .wrap{width:min(520px,100%)}
+    .brand{display:flex;align-items:center;gap:11px;margin:0 0 18px 4px}
+    .mark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.72);
+      border:1px solid rgba(255,255,255,.9);box-shadow:0 10px 26px rgba(0,0,0,.07);color:var(--teal);font-weight:800}
+    .brand strong{display:block}.brand span{font-size:12px;color:var(--muted)}
+    .card{
+      background:var(--glass);border:1px solid rgba(255,255,255,.78);border-radius:28px;padding:28px;
+      box-shadow:0 20px 60px rgba(0,0,0,.09);backdrop-filter:blur(24px) saturate(150%);
+    }
+    h1{font-size:30px;letter-spacing:-.04em;margin:0 0 8px}.sub{margin:0 0 24px;color:var(--muted);line-height:1.5}
+    label{display:block;font-size:12px;font-weight:700;margin:0 0 7px;color:#4d5559}
+    input{
+      width:100%;border:1px solid var(--line);background:rgba(255,255,255,.78);border-radius:14px;padding:13px 14px;
+      outline:none;font:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)
+    }
+    input:focus{border-color:rgba(15,116,125,.4);box-shadow:0 0 0 4px rgba(15,116,125,.08)}
+    .row{display:flex;gap:10px;margin-top:12px}.row button{flex:1}
+    button{
+      border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:750;cursor:pointer;
+      transition:.15s ease
+    }
+    button:hover{transform:translateY(-1px)}
+    .primary{background:rgba(15,116,125,.94);color:#fff;box-shadow:0 10px 22px rgba(15,116,125,.18)}
+    .secondary{background:rgba(255,255,255,.68);color:#2c3336;border:1px solid rgba(255,255,255,.8)}
+    .step{display:none}.step.active{display:block}
+    .code{
+      text-align:center;font-size:28px;letter-spacing:.24em;font-weight:700;padding-left:.24em
+    }
+    .message{margin-top:14px;font-size:13px;line-height:1.45;min-height:20px;color:var(--muted)}
+    .message.ok{color:var(--ok)}.message.error{color:var(--danger)}
+    .signed-in{padding:18px;border-radius:18px;background:rgba(37,139,82,.08);border:1px solid rgba(37,139,82,.18)}
+    .signed-in strong{display:block;color:var(--ok);font-size:20px;margin-bottom:5px}
+    .tiny{font-size:11px;color:var(--muted);margin-top:18px;line-height:1.5}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="brand"><div class="mark">FO</div><div><strong>Fobs</strong><span>One-time code test</span></div></div>
+    <section class="card">
+      <div id="stepEmail" class="step active">
+        <h1>Sign in to Fobs</h1>
+        <p class="sub">Enter your school email. We’ll send a 6-digit verification code through Microsoft Outlook.</p>
+        <label for="email">School email</label>
+        <input id="email" type="email" autocomplete="email" placeholder="name@daischina.net" />
+        <div class="row"><button id="sendBtn" class="primary">Send code</button></div>
+        <div id="emailMessage" class="message"></div>
+      </div>
+
+      <div id="stepCode" class="step">
+        <h1>Enter your code</h1>
+        <p class="sub">We sent a 6-digit code to <strong id="emailEcho"></strong>. It expires in 10 minutes.</p>
+        <label for="code">Verification code</label>
+        <input id="code" class="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" />
+        <div class="row">
+          <button id="backBtn" class="secondary">Back</button>
+          <button id="verifyBtn" class="primary">Verify</button>
+        </div>
+        <div id="codeMessage" class="message"></div>
+      </div>
+
+      <div id="stepDone" class="step">
+        <div class="signed-in">
+          <strong>Signed in ✓</strong>
+          <div id="signedInEmail"></div>
+        </div>
+        <p class="sub" style="margin-top:18px">The app has proved that this person can access that school mailbox. This can later become the identity used for observation permissions and audit logs.</p>
+        <div class="row"><button id="againBtn" class="secondary">Test another email</button></div>
+      </div>
+
+      <p class="tiny">Test page only. No observation data is stored here. The code is generated and verified by Vercel server functions, while Power Automate is used only to send the email.</p>
+    </section>
+  </main>
+
+<script>
+  let challenge = "";
+
+  const $ = id => document.getElementById(id);
+  function show(id){
+    ["stepEmail","stepCode","stepDone"].forEach(x=>$(x).classList.toggle("active",x===id));
+  }
+  function msg(id,text,type=""){
+    const el=$(id); el.textContent=text; el.className="message "+type;
+  }
+
+  $("sendBtn").onclick = async () => {
+    const email=$("email").value.trim().toLowerCase();
+    msg("emailMessage","Sending code…");
+    $("sendBtn").disabled=true;
+    try{
+      const r=await fetch("/api/request-code",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})});
+      const data=await r.json();
+      if(!r.ok) throw new Error(data.error||"Could not send code");
+      challenge=data.challenge;
+      $("emailEcho").textContent=email;
+      $("code").value="";
+      msg("codeMessage","");
+      show("stepCode");
+      $("code").focus();
+    }catch(e){msg("emailMessage",e.message,"error")}
+    finally{$("sendBtn").disabled=false}
+  };
+
+  $("verifyBtn").onclick = async () => {
+    const email=$("email").value.trim().toLowerCase();
+    const code=$("code").value.trim();
+    msg("codeMessage","Checking code…");
+    $("verifyBtn").disabled=true;
+    try{
+      const r=await fetch("/api/verify-code",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,code,challenge})});
+      const data=await r.json();
+      if(!r.ok) throw new Error(data.error||"Verification failed");
+      $("signedInEmail").textContent=data.email;
+      show("stepDone");
+    }catch(e){msg("codeMessage",e.message,"error")}
+    finally{$("verifyBtn").disabled=false}
+  };
+
+  $("backBtn").onclick=()=>show("stepEmail");
+  $("againBtn").onclick=()=>{challenge="";$("email").value="";$("code").value="";msg("emailMessage","");show("stepEmail")};
+  $("code").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,6));
+  $("code").addEventListener("keydown",e=>{if(e.key==="Enter")$("verifyBtn").click()});
+  $("email").addEventListener("keydown",e=>{if(e.key==="Enter")$("sendBtn").click()});
+</script>
+</body>
+</html>
