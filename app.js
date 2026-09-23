@@ -420,16 +420,30 @@ function signOut(){
 function summaryValue(id){
   return document.getElementById(id)?.textContent?.trim() || "Not rated";
 }
+function makeObservationID(){
+  if(globalThis.crypto?.randomUUID) return "OBS-" + crypto.randomUUID();
+  return "OBS-" + Date.now() + "-" + Math.random().toString(36).slice(2,10);
+}
 function buildSubmissionPayload(){
   const fields=serialize();
   return {
     ...fields,
+    observationID: fields.observationID || makeObservationID(),
     course: fields.course==="Other" ? (fields.otherCourse || "Other") : fields.course,
     facultySummary: summaryValue("facultySummary"),
     learningSummary: summaryValue("learningSummary"),
     attainmentSummary: summaryValue("attainmentSummary"),
     progressSummary: summaryValue("progressSummary"),
     finalOverall: summaryValue("finalOverall"),
+    teacherSelfFaculty: "",
+    teacherSelfLearning: "",
+    teacherSelfAttainment: "",
+    teacherSelfProgress: "",
+    teacherSelfOverall: "",
+    teacherSelfComments: "",
+    teacherSelfCompleted: false,
+    teacherSelfCompletedAt: "",
+    status: "Awaiting Teacher Self-Appraisal",
     weights: {
       faculty: evaluationWeights.faculty,
       learning: evaluationWeights.learning,
