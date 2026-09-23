@@ -79,24 +79,36 @@
               <input name="department" type="text" placeholder="Department" />
             </label>
             <label class="field">
+              <span>Grade</span>
+              <select name="grade" id="observationGrade" required>
+                <option value="">Select grade</option>
+                <option value="Grade 6">Grade 6</option>
+                <option value="Grade 7">Grade 7</option>
+                <option value="Grade 8">Grade 8</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
+                <option value="Mix">Mix</option>
+              </select>
+            </label>
+            <label class="field">
               <span>Course</span>
-              <input name="course" type="text" placeholder="Course / class" />
+              <select name="course" id="courseSelect" required>
+                <option value="">Select course</option>
+              </select>
+            </label>
+            <label class="field" id="otherCourseField" hidden>
+              <span>Other course</span>
+              <input name="otherCourse" id="otherCourseInput" type="text" placeholder="Enter course name" />
             </label>
             <label class="field">
               <span>Observer</span>
-              <input name="observer" type="text" placeholder="Observer name" />
+              <input name="observer" id="observerField" type="email" readonly />
             </label>
             <label class="field">
               <span>Observation date</span>
-              <input name="observationDate" type="date" />
-            </label>
-            <label class="field">
-              <span>School</span>
-              <select name="school">
-                <option value="">Select school</option>
-                <option value="DAIS">DAIS</option>
-                <option value="DHS">DHS</option>
-              </select>
+              <input name="observationDate" id="observationDate" type="date" />
             </label>
           </div>
         </section>
