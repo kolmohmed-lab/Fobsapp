@@ -118,55 +118,96 @@ function renderObservedTeachers(){
 }
 
 
-const courseOptions = [
-  "2D Art & Design","3D Art and Design","A Level Business","A Level Economics","A Level Mathematics","A Level Physics",
-  "A-Level Language & Literature","Advanced Placement Business and Finance","Advanced Team Sports","American Literature",
-  "Ancient World Literature and Composition","Ancient World Studies","AP Biology","AP Calculus AB","AP Calculus BC",
-  "AP Chemistry","AP Chinese Language and Culture","AP Computer Science A","AP English Language and Composition",
-  "AP English Literature","AP Human Geography","AP Macro-Economics","AP Micro-Economics","AP Physics 1",
-  "AP Physics C - Electricity/M","AP Pre-Calculus","AP Psychology","AP Statistics","AP Studio Art: 2D + AP Studio Art: 3D",
-  "AP US History","AP World History","Applied Studies: Coding and Digital Mgmt","Applied Studies: Coding and Game Design",
-  "Applied Studies: Drama","Applied Studies: Drama for Musical Theatre","Applied Studies: Engr and Product Dsgn",
-  "Applied Studies: Government","Applied Studies: MS MUN","Applied Studies: MUN","Applied Studies: Product Design",
-  "Applied Studies: Yearbook","APST Digital Art","APST Robotics","APST: English for University Access","Asian Literature",
-  "Asian Studies","Chinese for Literacy Development I","Chinese for Literacy Development II","Chinese for Literacy Development III",
-  "Chinese for Literacy Development IV","Digital Photography","EAL collaboration","English 7","English 8","English 9","English 10",
-  "Environmental Science","Foundation Art","Foundation Art + Studio Support and Leadership","Health Education",
-  "Health Education: Grade 7","Health Education: Grade 8","HM Life Science","HM Mandarin 7","HM Mandarin 8","HM Physical Science",
-  "HM Pre-Algebra","HM Science 7","HM Science 8","HM Social Studies 7","HM Social Studies 8",
-  "HS Advanced Band + MS Advanced Band","HS Advanced Orchestra + MS Advanced Orchestra",
-  "HS Beginning Orchestra + MS Beginning Orchestra","HS Cambridge English Developing","HS Chinese Advanced",
-  "HS Chinese Advanced High","HS Chinese Foundation","HS Chinese Foundation High","HS Chinese Intermediate",
-  "HS Intermediate Band + MS Intermediate Band","HS Intermediate Orchestra + MS Intermediate Orchestra",
-  "Integrated Math I","Integrated Math III","Integrated Mathematics II","Journalism","Language Arts","Life Science",
-  "Lifelong Fitness","MAT 397 Calculus III","Math","Modern World Literature and Composition","Modern World Studies",
-  "MS Art I","MS Art II + Studio Support and Leadership","MS Art III + Studio Support and Leadership",
-  "MS Cambridge English Developing","MS Cambridge English Expanding","MS Cambridge English Reaching","MS Chinese Advanced",
-  "MS Chinese Advanced High","MS Chinese Foundation","MS Chinese Foundation High",
-  "MS Chinese Intermediate + MS Chinese Intermediate High","MS Physical Education","Physical Science","Physics","Pre-Algebra",
-  "Pre-AP English II","Pre-AP Studio Art","Precalculus and an Introduction to Statistics",
-  "Precalculus and Intro to Statistics","Psychology","Science","Social Science","Social Studies 9","Social Studies 10",
-  "SOC 101 Introduction to Sociology","Speech and Debate","STEAM","Team Sports","Transition to College Math and Stat",
-  "US History","WRT 105: Practices of Academic Writing","Other"
-];
+const teacherCourses = {
+  "Alexandra Arnhold": [
+    "HS Intermediate Orchestra + MS Intermediate Orchestra",
+    "HS Advanced Orchestra + MS Advanced Orchestra",
+    "HS Beginning Orchestra + MS Beginning Orchestra",
+    "HS Intermediate Band + MS Intermediate Band",
+    "HS Advanced Band + MS Advanced Band"
+  ],
+  "Angelia Guan": [
+    "MS Chinese Foundation",
+    "HS Chinese Foundation High",
+    "HS Chinese Foundation",
+    "AP Chinese Language and Culture + HS Chinese Intermediate High",
+    "HS Chinese Advanced"
+  ],
+  "Ayman Massoud": ["Math","Science"],
+  "Cameron Benson": ["AP Psychology","American Literature","Psychology"],
+  "Carlo Moldes": ["HM Science 8","AP Biology","Science"],
+  "Carlos Duque": ["Health Education: Grade 8","Lifelong Fitness","MS Physical Education","Team Sports"],
+  "Chelsea Picco": ["English 9","Speech and Debate","Ancient World Literature and Composition","Journalism"],
+  "Cicily Coney": ["Pre-AP English II","English 10","Modern World Literature and Composition","AP English Language and Composition"],
+  "Claudia Arboleda": ["English 7","MS Cambridge English Reaching","English 8"],
+  "David Cong": ["Physics","AP Physics 1"],
+  "Eduardo Bandeira": [
+    "MS Art II + Studio Support and Leadership",
+    "2D Art & Design",
+    "MS Art III + Studio Support and Leadership",
+    "Foundation Art + Studio Support and Leadership",
+    "Foundation Art"
+  ],
+  "Fabian Sanchez": ["HM Life Science","Life Science","AP Chemistry"],
+  "Faicel Abderrahmen": ["HM Social Studies 7","HM Social Studies 8","Applied Studies: MUN","Applied Studies: MS MUN"],
+  "Haeshin Han": ["MS Cambridge English Developing"],
+  "Iris Jia": ["Chinese for Literacy Development I","Chinese for Literacy Development II"],
+  "Jacob Singleton": ["SOC 101 Introduction to Sociology","AP World History","Social Studies 9","Asian Studies"],
+  "Joanna Palle": ["Physical Science","HM Physical Science","A Level Physics"],
+  "John Nuevas": ["Integrated Mathematics II","Precalculus and an Introduction to Statistics","Precalculus and Intro to Statistics"],
+  "Jordan Reed": ["Asian Literature","WRT 105: Practices of Academic Writing","AP English Literature"],
+  "Julie Yue": ["Chinese for Literacy Development II","A-Level Language & Literature","Chinese for Literacy Development IV","Applied Studies: Yearbook"],
+  "Juvilyn Yonting": ["Integrated Math III","Integrated Math I"],
+  "Kiko Tang": ["HS Chinese Advanced High","MS Chinese Advanced High","MS Chinese Advanced","HS Chinese Intermediate"],
+  "Lara Potter": ["HS Cambridge English Developing"],
+  "Logan Bryant": ["EAL collaboration","APST: English for University Access","Applied Studies: Drama for Musical Theatre","Applied Studies: Drama"],
+  "Michael Kuropatwinski": ["AP Macro-Economics","Applied Studies: Government","Advanced Placement Business and Finance","AP Micro-Economics","A Level Economics"],
+  "Mike Ng": ["Integrated Math I","Pre-Algebra","HM Pre-Algebra"],
+  "Nicholas Wong": ["HM Science 7","DAIS Science 7","Environmental Science"],
+  "Nomthandazo Nyambosi": ["Social Science","Language Arts"],
+  "Peter Waldvogel": ["AP US History","Social Studies 10","US History","A Level Business"],
+  "Petros Libingi": ["AP Pre-Calculus","Transition to College Math and Stat","A Level Mathematics","AP Calculus AB"],
+  "Phillip Olivier": ["Social Science","Language Arts"],
+  "Robert Flanagan": ["Ancient World Studies","Modern World Studies","Applied Studies: MUN","AP Human Geography"],
+  "Ronald Diarez": ["Applied Studies: Engr and Product Dsgn","STEAM","APST Robotics","Applied Studies: Product Design"],
+  "Ryan Valdez": ["Applied Studies: Coding and Digital Mgmt","AP Computer Science A","Applied Studies: Coding and Game Design"],
+  "Serina Cui": ["HM Mandarin 8","MS Chinese Foundation High","HM Mandarin 7","MS Chinese Intermediate + MS Chinese Intermediate High"],
+  "Shirley Wang": ["Chinese for Literacy Development III","Chinese for Literacy Development II"],
+  "Sonya Boufath": ["MS Physical Education","Health Education","Health Education: Grade 7"],
+  "Stephen Cairns": ["MS Cambridge English Expanding"],
+  "Tarek Fouad": ["Team Sports","Health Education: Grade 7"],
+  "Xiaoming Liu": ["AP Calculus BC","AP Physics C - Electricity/M","MAT 397 Calculus III","AP Statistics"],
+  "Yuxin Fan": ["MS Art I","Pre-AP Studio Art","Digital Photography","AP Studio Art: 2D + AP Studio Art: 3D","APST Digital Art","3D Art and Design"]
+};
 
-function renderCourses(){
-  const select=document.getElementById("courseSelect");
-  if(!select) return;
-  select.innerHTML='<option value="">Select course</option>' +
-    courseOptions.map(name=>'<option value="'+name.replace(/"/g,"&quot;")+'">'+name+'</option>').join("");
+function updateCourseOptions(){
+  const teacherSelect=document.getElementById("observedTeacher");
+  const courseSelect=document.getElementById("courseSelect");
+  if(!teacherSelect || !courseSelect) return;
+
+  const teacher=teacherSelect.value;
+  const previous=courseSelect.value;
+  const courses=teacherCourses[teacher] || [];
+
+  if(!teacher){
+    courseSelect.innerHTML='<option value="">Select a teacher first</option>';
+    courseSelect.disabled=true;
+    return;
+  }
+
+  if(!courses.length){
+    courseSelect.innerHTML='<option value="">No timetable courses found for this teacher</option>';
+    courseSelect.disabled=true;
+    return;
+  }
+
+  courseSelect.disabled=false;
+  courseSelect.innerHTML='<option value="">Select course / subject</option>' +
+    courses.map(name=>'<option value="'+name.replace(/"/g,"&quot;")+'">'+name+'</option>').join("");
+
+  if(previous && courses.includes(previous)) courseSelect.value=previous;
 }
 
-function toggleOtherCourse(){
-  const select=document.getElementById("courseSelect");
-  const field=document.getElementById("otherCourseField");
-  const input=document.getElementById("otherCourseInput");
-  if(!select || !field || !input) return;
-  const isOther=select.value==="Other";
-  field.hidden=!isOther;
-  input.required=isOther;
-  if(!isOther) input.value="";
-}
 
 function defaultObservationDate(){
   const date=document.getElementById("observationDate");
@@ -371,7 +412,13 @@ function serialize(){
   return out;
 }
 function restore(data){
-  Object.entries(data||{}).forEach(([name,value])=>{
+  const values=data||{};
+  const teacher=form.elements.teacher;
+  if(teacher && values.teacher) teacher.value=values.teacher;
+  updateCourseOptions();
+
+  Object.entries(values).forEach(([name,value])=>{
+    if(name==="teacher") return;
     form.querySelectorAll(`[name="${CSS.escape(name)}"]`).forEach(el=>{
       if(el.type==="radio"||el.type==="checkbox") el.checked=el.value===value;
       else el.value=value;
@@ -393,8 +440,7 @@ function startFreshObservation(observerEmail=""){
   form.reset();
   sessionStorage.removeItem(STORAGE_KEY);
   renderObservedTeachers();
-  renderCourses();
-  toggleOtherCourse();
+  updateCourseOptions();
   if(form.elements.observer) form.elements.observer.value=observerEmail;
   defaultObservationDate();
   recalc();
@@ -429,7 +475,7 @@ function buildSubmissionPayload(){
   return {
     ...fields,
     observationID: fields.observationID || makeObservationID(),
-    course: fields.course==="Other" ? (fields.otherCourse || "Other") : fields.course,
+    course: fields.course,
     facultySummary: summaryValue("facultySummary"),
     learningSummary: summaryValue("learningSummary"),
     attainmentSummary: summaryValue("attainmentSummary"),
@@ -513,10 +559,12 @@ window.addEventListener("beforeprint",prepPrint);
 window.addEventListener("afterprint",resetAfterPrint);
 
 renderObservedTeachers();
-renderCourses();
+updateCourseOptions();
 loadDraft();
 defaultObservationDate();
-toggleOtherCourse();
-document.getElementById("courseSelect")?.addEventListener("change",toggleOtherCourse);
+document.getElementById("observedTeacher")?.addEventListener("change",()=>{
+  updateCourseOptions();
+  saveDraft();
+});
 recalc();
 initObserverAccess();
