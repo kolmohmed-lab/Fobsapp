@@ -78,7 +78,20 @@
             </label>
             <label class="field">
               <span>Department</span>
-              <input name="department" type="text" placeholder="Department" />
+              <select name="department" id="departmentSelect" required>
+                <option value="">Select department</option>
+                <option value="English">English</option>
+                <option value="EAL">EAL</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Science">Science</option>
+                <option value="Social Studies / Humanities">Social Studies / Humanities</option>
+                <option value="Mandarin / Chinese">Mandarin / Chinese</option>
+                <option value="Physical Education & Health">Physical Education & Health</option>
+                <option value="Performing Arts">Performing Arts</option>
+                <option value="Visual Arts">Visual Arts</option>
+                <option value="Design & Technology">Design & Technology</option>
+                <option value="Computer Science">Computer Science</option>
+              </select>
             </label>
             <label class="field">
               <span>Grade</span>
@@ -95,14 +108,10 @@
               </select>
             </label>
             <label class="field">
-              <span>Course</span>
-              <select name="course" id="courseSelect" required>
-                <option value="">Select course</option>
+              <span>Course / Subject</span>
+              <select name="course" id="courseSelect" required disabled>
+                <option value="">Select a teacher first</option>
               </select>
-            </label>
-            <label class="field" id="otherCourseField" hidden>
-              <span>Other course</span>
-              <input name="otherCourse" id="otherCourseInput" type="text" placeholder="Enter course name" />
             </label>
             <label class="field">
               <span>Observer</span>
@@ -283,6 +292,6 @@
       </form>
     </main>
   </div>
-  <script src="app.js?v=20260923-submit1"></script>
+  <script src="app.js?v=20260925-teacher-courses"></script>
 </body>
 </html>
