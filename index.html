@@ -187,7 +187,7 @@
 
           <div class="summary-grid">
             <div class="summary-box">
-              <span>Faculty teaching skills</span>
+              <span>Faculty teaching skills <b class="summary-weight">21.67%</b></span>
               <strong id="facultySummary">Not rated</strong>
               <select name="evaluationFacultyOverride" aria-label="Faculty teaching skills override">
                 <option value="">Automatic</option>
@@ -197,7 +197,7 @@
               </select>
             </div>
             <div class="summary-box">
-              <span>Student learning skills</span>
+              <span>Student learning skills <b class="summary-weight">21.67%</b></span>
               <strong id="learningSummary">Not rated</strong>
               <select name="evaluationLearningOverride" aria-label="Student learning skills override">
                 <option value="">Automatic</option>
@@ -207,7 +207,7 @@
               </select>
             </div>
             <div class="summary-box">
-              <span>Student attainment</span>
+              <span>Student attainment <b class="summary-weight">21.67%</b></span>
               <strong id="attainmentSummary">Not rated</strong>
               <select name="evaluationAttainmentOverride" aria-label="Student attainment override">
                 <option value="">Automatic</option>
@@ -217,7 +217,7 @@
               </select>
             </div>
             <div class="summary-box">
-              <span>Student progress</span>
+              <span>Student progress <b class="summary-weight">35%</b></span>
               <strong id="progressSummary">Not rated</strong>
               <select name="evaluationProgressOverride" aria-label="Student progress override">
                 <option value="">Automatic</option>
@@ -271,14 +271,14 @@
 
         <section class="panel rubric-panel print-card">
           <details>
-            <summary>Reference rubric — Faculty teaching skills</summary>
+            <summary>Reference Rubric 1</summary>
             <div id="facultyRubric" class="rubric-wrap"></div>
           </details>
         </section>
 
         <section class="panel rubric-panel print-card">
           <details>
-            <summary>Reference rubric — Student learning skills</summary>
+            <summary>Reference Rubric 2</summary>
             <div id="learningRubric" class="rubric-wrap"></div>
           </details>
         </section>
@@ -292,6 +292,16 @@
       </form>
     </main>
   </div>
-  <script src="app.js?v=20260925-teacher-courses"></script>
+
+  <div id="submissionSuccess" class="submission-success no-print" aria-hidden="true">
+    <div class="submission-success-card" role="dialog" aria-modal="true" aria-labelledby="submissionSuccessTitle">
+      <div class="submission-check" aria-hidden="true"><span>✓</span></div>
+      <p class="submission-kicker">Formal Observation</p>
+      <h2 id="submissionSuccessTitle">Observation submitted successfully</h2>
+      <p>The observation has been saved. An email has been sent to <strong id="submissionTeacherName">the teacher</strong> with a link to complete their self-appraisal.</p>
+      <button type="button" class="btn btn-primary" id="submissionDoneBtn">Done</button>
+    </div>
+  </div>
+  <script src="app.js?v=20261002-observation-feedback"></script>
 </body>
 </html>
