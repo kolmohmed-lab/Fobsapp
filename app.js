@@ -565,8 +565,8 @@ function hideSubmissionSuccess(){
 async function submitObservation(){
   const status=document.getElementById("submitStatus");
   const buttons=[document.getElementById("submitBtn"),document.getElementById("mobileSubmitBtn")].filter(Boolean);
-  if(!form.reportValidity()) return;
   if(!validateRequiredRatings()) return;
+  if(!form.reportValidity()) return;
   buttons.forEach(b=>b.disabled=true);
   if(status) status.textContent="Submitting observation…";
   try{
