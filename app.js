@@ -315,9 +315,9 @@ function renderCriteria(targetId,prefix,items){
     <div class="criterion-row">
       <div class="criterion-question">${q}</div>
       <div class="rating-buttons">
-        <label class="rate-choice outstanding"><input type="radio" name="${prefix}_${key}" value="OUTSTANDING"><span>Outstanding</span></label>
-        <label class="rate-choice acceptable"><input type="radio" name="${prefix}_${key}" value="ACCEPTABLE"><span>Acceptable</span></label>
-        <label class="rate-choice incomplete"><input type="radio" name="${prefix}_${key}" value="INCOMPLETE"><span>Incomplete</span></label>
+        <label class="rate-choice outstanding"><input type="radio" name="${prefix}_${key}" value="OUTSTANDING" required><span>Outstanding</span></label>
+        <label class="rate-choice acceptable"><input type="radio" name="${prefix}_${key}" value="ACCEPTABLE" required><span>Acceptable</span></label>
+        <label class="rate-choice incomplete"><input type="radio" name="${prefix}_${key}" value="INCOMPLETE" required><span>Incomplete</span></label>
       </div>
       <label class="evidence-input"><textarea name="${prefix}_${key}_notes" rows="2" placeholder="Evidence / notes"></textarea></label>
     </div>`).join("");
@@ -326,7 +326,7 @@ function renderCriteria(targetId,prefix,items){
 function renderStatements(targetId,name,items){
   document.getElementById(targetId).innerHTML = items.map(([value,text,band]) => `
     <label class="statement-card ${band}">
-      <input type="radio" name="${name}" value="${value}">
+      <input type="radio" name="${name}" value="${value}" required>
       <div class="statement-copy">${text}</div>
       <div class="statement-select"><span class="check"></span></div>
       <div class="statement-footer"><span>${band}</span></div>
@@ -334,9 +334,10 @@ function renderStatements(targetId,name,items){
 }
 
 function renderRubric(targetId,rows){
+  const firstHeading = targetId === "facultyRubric" ? "Faculty Teaching Skills" : "Student Learning Skills";
   document.getElementById(targetId).innerHTML = `
     <table class="rubric-table">
-      <thead><tr><th>Skill</th><th class="out">Outstanding</th><th class="acc">Acceptable</th><th class="inc">Incomplete</th></tr></thead>
+      <thead><tr><th>${firstHeading}</th><th class="out">Outstanding</th><th class="acc">Acceptable</th><th class="inc">Incomplete</th></tr></thead>
       <tbody>${rows.map(row => `<tr>${row.map(cell=>`<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody>
     </table>`;
 }
@@ -501,10 +502,71 @@ function buildSubmissionPayload(){
     submittedAt: new Date().toISOString()
   };
 }
+function clearRatingValidation(){
+  document.querySelectorAll(".rating-missing").forEach(el=>el.classList.remove("rating-missing"));
+}
+
+function validateRequiredRatings(){
+  clearRatingValidation();
+  const missing=[];
+
+  facultyCriteria.forEach(([key])=>{
+    if(!selected("faculty_"+key)){
+      const input=form.querySelector('[name="faculty_'+key+'"]');
+      const row=input?.closest(".criterion-row");
+      if(row){row.classList.add("rating-missing");missing.push(row);}
+    }
+  });
+
+  learningCriteria.forEach(([key])=>{
+    if(!selected("learning_"+key)){
+      const input=form.querySelector('[name="learning_'+key+'"]');
+      const row=input?.closest(".criterion-row");
+      if(row){row.classList.add("rating-missing");missing.push(row);}
+    }
+  });
+
+  if(!selected("studentAttainment")){
+    const section=document.getElementById("attainmentOptions")?.closest(".panel");
+    if(section){section.classList.add("rating-missing");missing.push(section);}
+  }
+  if(!selected("studentProgress")){
+    const section=document.getElementById("progressOptions")?.closest(".panel");
+    if(section){section.classList.add("rating-missing");missing.push(section);}
+  }
+
+  if(!missing.length) return true;
+
+  const status=document.getElementById("submitStatus");
+  if(status) status.textContent="Please rate every observation criterion before submitting.";
+  missing[0].scrollIntoView({behavior:"smooth",block:"center"});
+  return false;
+}
+
+function showSubmissionSuccess(){
+  const modal=document.getElementById("submissionSuccess");
+  const teacher=document.getElementById("submissionTeacherName");
+  if(teacher) teacher.textContent=form.elements.teacher?.value || "the teacher";
+  if(modal){
+    modal.classList.add("is-visible");
+    modal.setAttribute("aria-hidden","false");
+    document.getElementById("submissionDoneBtn")?.focus();
+  }
+}
+
+function hideSubmissionSuccess(){
+  const modal=document.getElementById("submissionSuccess");
+  if(modal){
+    modal.classList.remove("is-visible");
+    modal.setAttribute("aria-hidden","true");
+  }
+}
+
 async function submitObservation(){
   const status=document.getElementById("submitStatus");
   const buttons=[document.getElementById("submitBtn"),document.getElementById("mobileSubmitBtn")].filter(Boolean);
   if(!form.reportValidity()) return;
+  if(!validateRequiredRatings()) return;
   buttons.forEach(b=>b.disabled=true);
   if(status) status.textContent="Submitting observation…";
   try{
@@ -519,6 +581,7 @@ async function submitObservation(){
     if(status) status.textContent="Observation submitted successfully.";
     sessionStorage.removeItem(STORAGE_KEY);
     setSaveState("Submitted");
+    showSubmissionSuccess();
   }catch(err){
     if(status) status.textContent=err.message;
   }finally{
@@ -547,7 +610,11 @@ form.addEventListener("input",()=>{
   clearTimeout(dirtyTimer);
   dirtyTimer=setTimeout(saveDraft,1200);
 });
-form.addEventListener("change",()=>{recalc();saveDraft()});
+form.addEventListener("change",e=>{
+  e.target.closest(".rating-missing")?.classList.remove("rating-missing");
+  recalc();
+  saveDraft();
+});
 
 document.getElementById("saveBtn").addEventListener("click",saveDraft);
 document.getElementById("mobileSaveBtn").addEventListener("click",saveDraft);
@@ -557,6 +624,9 @@ document.getElementById("signOutBtn").addEventListener("click",signOut);
 document.getElementById("clearBtn").addEventListener("click",clearForm);
 document.getElementById("printBtn").addEventListener("click",()=>{saveDraft();window.print()});
 document.getElementById("mobilePrintBtn").addEventListener("click",()=>{saveDraft();window.print()});
+document.getElementById("submissionDoneBtn")?.addEventListener("click",hideSubmissionSuccess);
+document.getElementById("submissionSuccess")?.addEventListener("click",e=>{if(e.target.id==="submissionSuccess") hideSubmissionSuccess();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape") hideSubmissionSuccess();});
 window.addEventListener("beforeprint",prepPrint);
 window.addEventListener("afterprint",resetAfterPrint);
 
