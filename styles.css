@@ -607,3 +607,101 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
   .access-card{padding:22px;border-radius:22px}
   .access-card h1{font-size:29px}
 }
+
+
+/* Observation feedback refinements */
+.summary-weight{
+  display:inline-flex;
+  align-items:center;
+  margin-left:5px;
+  padding:2px 6px;
+  border-radius:999px;
+  background:rgba(15,116,125,.09);
+  color:var(--teal);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:0;
+  text-transform:none;
+}
+.rating-missing{
+  outline:2px solid rgba(216,74,74,.62)!important;
+  outline-offset:3px;
+  animation:missingPulse .7s ease 2;
+}
+@keyframes missingPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(216,74,74,.10)}
+  50%{box-shadow:0 0 0 8px rgba(216,74,74,.10)}
+}
+.submission-success{
+  position:fixed;
+  inset:0;
+  z-index:2000;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(15,28,34,.32);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .2s ease,visibility .2s ease;
+}
+.submission-success.is-visible{opacity:1;visibility:visible}
+.submission-success-card{
+  width:min(500px,100%);
+  padding:34px 30px 28px;
+  border-radius:28px;
+  text-align:center;
+  background:rgba(255,255,255,.96);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 30px 90px rgba(10,35,43,.22);
+  transform:translateY(14px) scale(.97);
+  transition:transform .28s cubic-bezier(.2,.8,.2,1);
+}
+.submission-success.is-visible .submission-success-card{transform:translateY(0) scale(1)}
+.submission-check{
+  width:76px;
+  height:76px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,#0f747d,#38a474);
+  color:white;
+  box-shadow:0 16px 36px rgba(15,116,125,.24);
+  animation:successPop .55s cubic-bezier(.2,.9,.25,1.3);
+}
+.submission-check span{font-size:38px;font-weight:800;line-height:1}
+.submission-kicker{
+  margin:0 0 7px;
+  color:var(--teal);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+.submission-success-card h2{
+  margin:0 0 11px;
+  font-size:28px;
+  letter-spacing:-.03em;
+}
+.submission-success-card p:not(.submission-kicker){
+  margin:0 auto 23px;
+  max-width:420px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.55;
+}
+.submission-success-card .btn{min-width:150px}
+@keyframes successPop{
+  0%{transform:scale(.45);opacity:0}
+  65%{transform:scale(1.08);opacity:1}
+  100%{transform:scale(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .submission-success-card,.submission-check,.rating-missing{animation:none!important;transition:none!important}
+}
+@media print{
+  .summary-weight{background:transparent!important;color:#555!important;padding:0}
+  .rating-missing{outline:0!important}
+}
