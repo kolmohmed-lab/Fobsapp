@@ -293,15 +293,59 @@
     </main>
   </div>
 
+  <div id="submissionConfirm" class="submission-confirm no-print" aria-hidden="true">
+    <div class="submission-confirm-card" role="dialog" aria-modal="true" aria-labelledby="submissionConfirmTitle">
+      <p class="submission-kicker">Final check</p>
+      <h2 id="submissionConfirmTitle">Submit this observation?</h2>
+      <p class="submission-confirm-copy">Review the teacher notification before the observation is submitted.</p>
+
+      <div class="submission-review">
+        <div class="submission-review-row">
+          <span>Teacher</span>
+          <strong id="confirmTeacherName">—</strong>
+        </div>
+        <div class="submission-review-row">
+          <span>Course / Subject</span>
+          <strong id="confirmCourseName">—</strong>
+        </div>
+      </div>
+
+      <fieldset class="email-choice">
+        <legend>Send the teacher an email?</legend>
+        <label class="email-choice-option">
+          <input type="radio" name="sendTeacherEmailChoice" value="yes">
+          <span><strong>Yes</strong><small>Send the self-appraisal link after submission.</small></span>
+        </label>
+        <label class="email-choice-option">
+          <input type="radio" name="sendTeacherEmailChoice" value="no" checked>
+          <span><strong>No</strong><small>Save the observation without emailing the teacher.</small></span>
+        </label>
+      </fieldset>
+
+      <label class="field confirm-email-field" id="confirmEmailField">
+        <span>Teacher email</span>
+        <input id="confirmTeacherEmail" type="email" autocomplete="off" placeholder="teacher@daischina.net" disabled>
+        <small>You can correct the recipient before sending.</small>
+      </label>
+
+      <p id="confirmSubmissionMessage" class="access-message" aria-live="polite"></p>
+
+      <div class="submission-confirm-actions">
+        <button type="button" class="btn btn-ghost" id="cancelSubmissionBtn">Back</button>
+        <button type="button" class="btn btn-primary" id="confirmSubmissionBtn">Submit observation</button>
+      </div>
+    </div>
+  </div>
+
   <div id="submissionSuccess" class="submission-success no-print" aria-hidden="true">
     <div class="submission-success-card" role="dialog" aria-modal="true" aria-labelledby="submissionSuccessTitle">
       <div class="submission-check" aria-hidden="true"><span>✓</span></div>
       <p class="submission-kicker">Formal Observation</p>
       <h2 id="submissionSuccessTitle">Observation submitted successfully</h2>
-      <p>The observation has been saved. An email has been sent to <strong id="submissionTeacherName">the teacher</strong> with a link to complete their self-appraisal.</p>
+      <p id="submissionSuccessCopy">The observation has been saved.</p>
       <button type="button" class="btn btn-primary" id="submissionDoneBtn">Done</button>
     </div>
   </div>
-  <script src="app.js?v=20261002-observation-feedback"></script>
+  <script src="app.js?v=20261008-submit-confirm"></script>
 </body>
 </html>
