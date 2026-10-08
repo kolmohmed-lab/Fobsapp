@@ -293,6 +293,16 @@
     </main>
   </div>
 
+  <div id="workingOverlay" class="working-overlay no-print" aria-hidden="true">
+    <div class="working-card" role="status" aria-live="polite">
+      <div class="working-spinner" aria-hidden="true"></div>
+      <div>
+        <strong id="workingTitle">Working…</strong>
+        <p id="workingMessage">Please wait a moment.</p>
+      </div>
+    </div>
+  </div>
+
   <div id="submissionConfirm" class="submission-confirm no-print" aria-hidden="true">
     <div class="submission-confirm-card" role="dialog" aria-modal="true" aria-labelledby="submissionConfirmTitle">
       <p class="submission-kicker">Final check</p>
@@ -318,7 +328,7 @@
         </label>
         <label class="email-choice-option">
           <input type="radio" name="sendTeacherEmailChoice" value="no" checked>
-          <span><strong>No</strong><small>Save the observation without emailing the teacher.</small></span>
+          <span><strong>No</strong><small>Do not email the teacher. For this submission, any required notification will be routed to the observer instead.</small></span>
         </label>
       </fieldset>
 
@@ -346,6 +356,6 @@
       <button type="button" class="btn btn-primary" id="submissionDoneBtn">Done</button>
     </div>
   </div>
-  <script src="app.js?v=20261008-submit-confirm"></script>
+  <script src="app.js?v=20261008-submit-ux2"></script>
 </body>
 </html>
