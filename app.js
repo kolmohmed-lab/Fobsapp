@@ -543,10 +543,17 @@ function validateRequiredRatings(){
   return false;
 }
 
-function showSubmissionSuccess(){
+function showSubmissionSuccess(emailSent=false,recipientEmail=""){
   const modal=document.getElementById("submissionSuccess");
   const teacher=document.getElementById("submissionTeacherName");
-  if(teacher) teacher.textContent=form.elements.teacher?.value || "the teacher";
+  const copy=document.getElementById("submissionSuccessCopy");
+  const teacherName=form.elements.teacher?.value || "the teacher";
+  if(teacher) teacher.textContent=teacherName;
+  if(copy){
+    copy.innerHTML=emailSent
+      ? 'The observation has been saved. An email was sent to <strong>'+teacherName+'</strong>'+(recipientEmail ? ' at <strong>'+recipientEmail+'</strong>' : '')+' with a link to complete their self-appraisal.'
+      : 'The observation has been saved. <strong>No email was sent to the teacher.</strong>';
+  }
   if(modal){
     modal.classList.add("is-visible");
     modal.setAttribute("aria-hidden","false");
@@ -562,31 +569,129 @@ function hideSubmissionSuccess(){
   }
 }
 
-async function submitObservation(){
+let pendingSubmissionPayload=null;
+let pendingSendTeacherEmail=false;
+
+async function getTeacherEmailForConfirmation(teacher){
+  const response=await fetch("/api/get-teacher-email",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      teacher,
+      observer:form.elements.observer?.value || ""
+    })
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(data.error || "Could not load the teacher email");
+  return data.email || "";
+}
+
+function setEmailChoiceState(){
+  const choice=document.querySelector('input[name="sendTeacherEmailChoice"]:checked')?.value || "no";
+  const emailInput=document.getElementById("confirmTeacherEmail");
+  const field=document.getElementById("confirmEmailField");
+  const send=choice==="yes";
+  if(emailInput) emailInput.disabled=!send;
+  field?.classList.toggle("is-disabled",!send);
+}
+
+function hideSubmissionConfirm(){
+  const modal=document.getElementById("submissionConfirm");
+  if(modal){
+    modal.classList.remove("is-visible");
+    modal.setAttribute("aria-hidden","true");
+  }
+}
+
+async function openSubmissionConfirm(){
   const status=document.getElementById("submitStatus");
-  const buttons=[document.getElementById("submitBtn"),document.getElementById("mobileSubmitBtn")].filter(Boolean);
   if(!validateRequiredRatings()) return;
   if(!form.reportValidity()) return;
-  buttons.forEach(b=>b.disabled=true);
-  if(status) status.textContent="Submitting observation…";
+
+  recalc();
+  pendingSubmissionPayload=buildSubmissionPayload();
+  const teacher=pendingSubmissionPayload.teacher || "";
+  document.getElementById("confirmTeacherName").textContent=teacher || "—";
+  document.getElementById("confirmCourseName").textContent=pendingSubmissionPayload.course || "—";
+
+  const noChoice=document.querySelector('input[name="sendTeacherEmailChoice"][value="no"]');
+  if(noChoice) noChoice.checked=true;
+  setEmailChoiceState();
+
+  const message=document.getElementById("confirmSubmissionMessage");
+  const emailInput=document.getElementById("confirmTeacherEmail");
+  if(message){message.textContent="Loading teacher email…";message.className="access-message";}
+  if(emailInput) emailInput.value="";
+
   try{
-    recalc();
+    const email=await getTeacherEmailForConfirmation(teacher);
+    if(emailInput) emailInput.value=email;
+    if(message) message.textContent=email ? "" : "No email is currently saved for this teacher.";
+  }catch(err){
+    if(message){message.textContent=err.message;message.className="access-message error";}
+  }
+
+  const modal=document.getElementById("submissionConfirm");
+  if(modal){
+    modal.classList.add("is-visible");
+    modal.setAttribute("aria-hidden","false");
+    document.getElementById("confirmSubmissionBtn")?.focus();
+  }
+  if(status) status.textContent="";
+}
+
+async function confirmObservationSubmission(){
+  const status=document.getElementById("submitStatus");
+  const message=document.getElementById("confirmSubmissionMessage");
+  const confirmBtn=document.getElementById("confirmSubmissionBtn");
+  const choice=document.querySelector('input[name="sendTeacherEmailChoice"]:checked')?.value || "no";
+  const sendTeacherEmail=choice==="yes";
+  const email=(document.getElementById("confirmTeacherEmail")?.value || "").trim();
+
+  if(sendTeacherEmail && !email){
+    if(message){message.textContent="Enter the teacher email before sending.";message.className="access-message error";}
+    document.getElementById("confirmTeacherEmail")?.focus();
+    return;
+  }
+  if(sendTeacherEmail && !document.getElementById("confirmTeacherEmail")?.checkValidity()){
+    document.getElementById("confirmTeacherEmail")?.reportValidity();
+    return;
+  }
+
+  if(!pendingSubmissionPayload) pendingSubmissionPayload=buildSubmissionPayload();
+  const payload={
+    ...pendingSubmissionPayload,
+    sendTeacherEmail,
+    teacherEmailOverride:sendTeacherEmail ? email : ""
+  };
+
+  if(confirmBtn) confirmBtn.disabled=true;
+  if(message){message.textContent="Submitting observation…";message.className="access-message";}
+  try{
     const response=await fetch("/api/submit-observation",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(buildSubmissionPayload())
+      body:JSON.stringify(payload)
     });
     const data=await response.json().catch(()=>({}));
     if(!response.ok) throw new Error(data.error || "Could not submit observation");
+
+    pendingSendTeacherEmail=sendTeacherEmail;
+    hideSubmissionConfirm();
     if(status) status.textContent="Observation submitted successfully.";
     sessionStorage.removeItem(STORAGE_KEY);
     setSaveState("Submitted");
-    showSubmissionSuccess();
+    showSubmissionSuccess(sendTeacherEmail,email);
+    pendingSubmissionPayload=null;
   }catch(err){
-    if(status) status.textContent=err.message;
+    if(message){message.textContent=err.message;message.className="access-message error";}
   }finally{
-    buttons.forEach(b=>b.disabled=false);
+    if(confirmBtn) confirmBtn.disabled=false;
   }
+}
+
+async function submitObservation(){
+  await openSubmissionConfirm();
 }
 function prepPrint(){
   document.querySelectorAll("textarea").forEach(el=>{
@@ -616,6 +721,11 @@ form.addEventListener("change",e=>{
   saveDraft();
 });
 
+document.querySelectorAll('input[name="sendTeacherEmailChoice"]').forEach(input=>input.addEventListener("change",setEmailChoiceState));
+document.getElementById("cancelSubmissionBtn")?.addEventListener("click",hideSubmissionConfirm);
+document.getElementById("confirmSubmissionBtn")?.addEventListener("click",confirmObservationSubmission);
+document.getElementById("submissionConfirm")?.addEventListener("click",e=>{if(e.target.id==="submissionConfirm") hideSubmissionConfirm();});
+
 document.getElementById("saveBtn").addEventListener("click",saveDraft);
 document.getElementById("mobileSaveBtn").addEventListener("click",saveDraft);
 document.getElementById("submitBtn").addEventListener("click",submitObservation);
@@ -626,7 +736,12 @@ document.getElementById("printBtn").addEventListener("click",()=>{saveDraft();wi
 document.getElementById("mobilePrintBtn").addEventListener("click",()=>{saveDraft();window.print()});
 document.getElementById("submissionDoneBtn")?.addEventListener("click",hideSubmissionSuccess);
 document.getElementById("submissionSuccess")?.addEventListener("click",e=>{if(e.target.id==="submissionSuccess") hideSubmissionSuccess();});
-document.addEventListener("keydown",e=>{if(e.key==="Escape") hideSubmissionSuccess();});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    hideSubmissionConfirm();
+    hideSubmissionSuccess();
+  }
+});
 window.addEventListener("beforeprint",prepPrint);
 window.addEventListener("afterprint",resetAfterPrint);
 
