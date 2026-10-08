@@ -552,7 +552,7 @@ function showSubmissionSuccess(emailSent=false,recipientEmail=""){
   if(copy){
     copy.innerHTML=emailSent
       ? 'The observation has been saved. An email was sent to <strong>'+teacherName+'</strong>'+(recipientEmail ? ' at <strong>'+recipientEmail+'</strong>' : '')+' with a link to complete their self-appraisal.'
-      : 'The observation has been saved. <strong>No email was sent to the teacher.</strong>';
+      : 'The observation has been saved. <strong>The teacher was not emailed.</strong> Any required test notification was routed to the observer instead.';
   }
   if(modal){
     modal.classList.add("is-visible");
@@ -571,6 +571,26 @@ function hideSubmissionSuccess(){
 
 let pendingSubmissionPayload=null;
 let pendingSendTeacherEmail=false;
+
+function showWorkingOverlay(title="Working…",message="Please wait a moment."){
+  const overlay=document.getElementById("workingOverlay");
+  const titleEl=document.getElementById("workingTitle");
+  const messageEl=document.getElementById("workingMessage");
+  if(titleEl) titleEl.textContent=title;
+  if(messageEl) messageEl.textContent=message;
+  if(overlay){
+    overlay.classList.add("is-visible");
+    overlay.setAttribute("aria-hidden","false");
+  }
+}
+
+function hideWorkingOverlay(){
+  const overlay=document.getElementById("workingOverlay");
+  if(overlay){
+    overlay.classList.remove("is-visible");
+    overlay.setAttribute("aria-hidden","true");
+  }
+}
 
 async function getTeacherEmailForConfirmation(teacher){
   const response=await fetch("/api/get-teacher-email",{
@@ -624,11 +644,14 @@ async function openSubmissionConfirm(){
   if(emailInput) emailInput.value="";
 
   try{
+    showWorkingOverlay("Preparing submission","Checking the teacher details and email address…");
     const email=await getTeacherEmailForConfirmation(teacher);
     if(emailInput) emailInput.value=email;
     if(message) message.textContent=email ? "" : "No email is currently saved for this teacher.";
   }catch(err){
     if(message){message.textContent=err.message;message.className="access-message error";}
+  }finally{
+    hideWorkingOverlay();
   }
 
   const modal=document.getElementById("submissionConfirm");
@@ -667,6 +690,12 @@ async function confirmObservationSubmission(){
 
   if(confirmBtn) confirmBtn.disabled=true;
   if(message){message.textContent="Submitting observation…";message.className="access-message";}
+  showWorkingOverlay(
+    "Submitting observation",
+    sendTeacherEmail
+      ? "Saving the observation and preparing the teacher email. Please keep this window open."
+      : "Saving the observation. The teacher will not be emailed."
+  );
   try{
     const response=await fetch("/api/submit-observation",{
       method:"POST",
@@ -686,6 +715,7 @@ async function confirmObservationSubmission(){
   }catch(err){
     if(message){message.textContent=err.message;message.className="access-message error";}
   }finally{
+    hideWorkingOverlay();
     if(confirmBtn) confirmBtn.disabled=false;
   }
 }
