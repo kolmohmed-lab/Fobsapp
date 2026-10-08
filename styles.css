@@ -705,3 +705,76 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
   .summary-weight{background:transparent!important;color:#555!important;padding:0}
   .rating-missing{outline:0!important}
 }
+
+/* Submission confirmation */
+.submission-confirm{
+  position:fixed;
+  inset:0;
+  z-index:1990;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(15,28,34,.34);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .2s ease,visibility .2s ease;
+}
+.submission-confirm.is-visible{opacity:1;visibility:visible}
+.submission-confirm-card{
+  width:min(560px,100%);
+  max-height:min(760px,calc(100vh - 36px));
+  overflow:auto;
+  padding:30px;
+  border-radius:28px;
+  background:rgba(255,255,255,.97);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 30px 90px rgba(10,35,43,.22);
+}
+.submission-confirm-card h2{margin:0 0 8px;font-size:29px;letter-spacing:-.035em}
+.submission-confirm-copy{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.5}
+.submission-review{
+  display:grid;
+  gap:1px;
+  margin:0 0 20px;
+  overflow:hidden;
+  border:1px solid rgba(26,64,74,.10);
+  border-radius:16px;
+  background:rgba(26,64,74,.08);
+}
+.submission-review-row{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  padding:13px 15px;
+  background:#fff;
+}
+.submission-review-row span{color:var(--muted);font-size:12px}
+.submission-review-row strong{text-align:right;font-size:13px}
+.email-choice{margin:0 0 18px;padding:0;border:0}
+.email-choice legend{margin-bottom:9px;font-size:13px;font-weight:800}
+.email-choice-option{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  margin:8px 0;
+  padding:13px 14px;
+  border:1px solid rgba(26,64,74,.12);
+  border-radius:15px;
+  cursor:pointer;
+  background:rgba(248,251,252,.86);
+}
+.email-choice-option input{margin-top:3px}
+.email-choice-option span{display:grid;gap:2px}
+.email-choice-option strong{font-size:13px}
+.email-choice-option small{color:var(--muted);font-size:11px;line-height:1.4}
+.confirm-email-field{margin-top:4px}
+.confirm-email-field small{margin-top:5px;color:var(--muted);font-size:10px}
+.confirm-email-field.is-disabled{opacity:.48}
+.submission-confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+@media(max-width:600px){
+  .submission-confirm{padding:12px}
+  .submission-confirm-card{padding:22px;border-radius:22px}
+  .submission-confirm-actions{display:grid;grid-template-columns:1fr 1fr}
+}
