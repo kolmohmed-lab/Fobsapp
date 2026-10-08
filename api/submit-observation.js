@@ -15,13 +15,23 @@ export default async function handler(req,res){
       return res.status(400).json({error:"Teacher, observer and observation date are required"});
     }
 
-    let teacherEmail="";
+    let mappedTeacherEmail="";
     try{
       const map=JSON.parse(process.env.OBSERVED_TEACHER_EMAILS_JSON || "{}");
-      teacherEmail=map[payload.teacher] || "";
+      mappedTeacherEmail=map[payload.teacher] || "";
     }catch{}
 
-    const outgoing={...payload,teacherEmail};
+    const sendTeacherEmail=payload.sendTeacherEmail === true;
+    const overrideEmail=typeof payload.teacherEmailOverride === "string" ? payload.teacherEmailOverride.trim() : "";
+    const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const teacherEmail=sendTeacherEmail ? (overrideEmail || mappedTeacherEmail) : "";
+
+    if(sendTeacherEmail && (!teacherEmail || !emailPattern.test(teacherEmail))){
+      return res.status(400).json({error:"A valid teacher email is required to send the notification"});
+    }
+
+    const outgoing={...payload,teacherEmail,sendTeacherEmail};
+    delete outgoing.teacherEmailOverride;
 
     const flowResponse=await fetch(flowUrl,{
       method:"POST",
