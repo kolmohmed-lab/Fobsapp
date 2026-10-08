@@ -778,3 +778,93 @@ textarea{resize:vertical;min-height:80px;line-height:1.45}
   .submission-confirm-card{padding:22px;border-radius:22px}
   .submission-confirm-actions{display:grid;grid-template-columns:1fr 1fr}
 }
+
+/* Submission UX polish */
+.working-overlay{
+  position:fixed;
+  inset:0;
+  z-index:2100;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(15,28,34,.28);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .18s ease,visibility .18s ease;
+}
+.working-overlay.is-visible{opacity:1;visibility:visible}
+.working-card{
+  width:min(430px,calc(100% - 24px));
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:20px 22px;
+  border-radius:22px;
+  background:rgba(255,255,255,.96);
+  border:1px solid rgba(255,255,255,.92);
+  box-shadow:0 24px 70px rgba(10,35,43,.22);
+}
+.working-card strong{
+  display:block;
+  margin-bottom:4px;
+  font-size:16px;
+  letter-spacing:-.015em;
+}
+.working-card p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+.working-spinner{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  border-radius:50%;
+  border:3px solid rgba(15,116,125,.16);
+  border-top-color:var(--teal);
+  animation:workingSpin .8s linear infinite;
+}
+@keyframes workingSpin{to{transform:rotate(360deg)}}
+
+@media(min-width:601px){
+  .email-choice{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .email-choice legend{
+    grid-column:1/-1;
+    margin-bottom:2px;
+  }
+  .email-choice-option{
+    position:relative;
+    min-height:98px;
+    margin:0;
+    padding:16px;
+    align-items:flex-start;
+    transition:border-color .15s ease,background .15s ease,box-shadow .15s ease,transform .15s ease;
+  }
+  .email-choice-option:hover{transform:translateY(-1px)}
+  .email-choice-option:has(input:checked){
+    border-color:rgba(15,116,125,.55);
+    background:rgba(15,116,125,.07);
+    box-shadow:0 0 0 2px rgba(15,116,125,.10);
+  }
+  .email-choice-option input{
+    width:18px;
+    height:18px;
+    flex:0 0 18px;
+    accent-color:var(--teal);
+  }
+  .email-choice-option strong{font-size:14px}
+  .email-choice-option small{font-size:11.5px;line-height:1.45}
+}
+@media(max-width:600px){
+  .working-card{padding:18px;border-radius:19px}
+}
+@media (prefers-reduced-motion:reduce){
+  .working-spinner{animation:none}
+}
