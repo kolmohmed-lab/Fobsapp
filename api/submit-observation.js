@@ -24,10 +24,16 @@ export default async function handler(req,res){
     const sendTeacherEmail=payload.sendTeacherEmail === true;
     const overrideEmail=typeof payload.teacherEmailOverride === "string" ? payload.teacherEmailOverride.trim() : "";
     const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const teacherEmail=sendTeacherEmail ? (overrideEmail || mappedTeacherEmail) : "";
+    const observerEmail=String(payload.observer || "").trim();
+    const teacherEmail=sendTeacherEmail
+      ? (overrideEmail || mappedTeacherEmail)
+      : observerEmail;
 
     if(sendTeacherEmail && (!teacherEmail || !emailPattern.test(teacherEmail))){
       return res.status(400).json({error:"A valid teacher email is required to send the notification"});
+    }
+    if(!sendTeacherEmail && (!teacherEmail || !emailPattern.test(teacherEmail))){
+      return res.status(400).json({error:"A valid observer email is required for a test submission"});
     }
 
     const outgoing={...payload,teacherEmail,sendTeacherEmail};
